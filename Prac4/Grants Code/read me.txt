@@ -1,0 +1,5 @@
+Both the debounce and the custom counters are in this file, as well as their simulation scripts
+Check the simulation scripts for usage.
+
+inside of the debounce file there is a paramater for the clock frequency, set it to match the board
+for 30ms debounce
