@@ -15,7 +15,7 @@ module WallClock(
     output [7:0] SevenSegment,
     output reg [7:0] LED
 );
-    reg [31:0] tick_speed = 10000000;
+    reg [31:0] tick_speed = 10000000; // change to 100000000 for accurate seconds
    
     wire pwmClk;
     reg [7:0] duty;

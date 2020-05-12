@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 09.05.2020 11:56:48
-// Design Name: 
-// Module Name: PWM
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module PWM(
     input clk,
@@ -31,12 +11,7 @@ module PWM(
     reg [31:0] counter_value = (Clock_Frequency/PWM_Frequency);
     
     reg[16:0] count;
-    
-//    always @(posedge clk) begin
-//        count <= count + 1'b1;
-//        if(&count) out = !out;
-//    end
-
+   
     always@(posedge clk) begin
         counter_value = counter_value - 1;
         if(counter_value == 0) begin

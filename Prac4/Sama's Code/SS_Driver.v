@@ -33,12 +33,6 @@ reg [14:0] Count2;
         end
     end
 
-
-//always @(posedge Clk) begin
-//    Count <= Count + 1'b1;
-//    if(&Count) driverClk <= !driverClk;
-//end
-
 reg [7:0] SegmentDrivers1;
 // Scroll through the digits, switching one on at a time
 always @(posedge Clk) begin
