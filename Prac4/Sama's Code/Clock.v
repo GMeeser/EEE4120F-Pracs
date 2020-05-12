@@ -13,7 +13,7 @@ module WallClock(
 	//outputs - these will depend on your board's constraint files
 	output [7:0] SegmentDrivers,
     output [7:0] SevenSegment,
-    output reg [9:0] LED
+    output reg [7:0] LED
 );
     reg [31:0] tick_speed = 10000000;
    
@@ -61,9 +61,9 @@ module WallClock(
     reg [32:0] count;
 	reg second_tick = 1'b0;
 	reg c = 1'b0;
-	custom_counter cc_sec (.count_with_overflow(second_tick), .count_without_overflow(c), .count_to2(4'd5), .count_to1(4'd9), .overflow(overflow_sec), .count2(secs2), .count1(secs1));
-    custom_counter cc_min ( .count_with_overflow(MButton), .count_without_overflow(c), .count_to2(4'd5), .count_to1(4'd9), .overflow(overflow_min), .count2(mins2), .count1(mins1));
-    custom_counter cc_hour ( .count_with_overflow(HButton), .count_without_overflow(c), .count_to2(4'd2), .count_to1(4'd4), .overflow(overflow_hour), .count2(hours2), .count1(hours1));
+	custom_counter cc_sec (.Clk(CLK100MHZ), .count_with_overflow(second_tick), .count_without_overflow(c), .count_to2(4'd5), .count_to1(4'd9), .overflow(overflow_sec), .count2(secs2), .count1(secs1));
+    custom_counter cc_min (.Clk(CLK100MHZ), .count_with_overflow(overflow_sec), .count_without_overflow(MButton), .count_to2(4'd5), .count_to1(4'd9), .overflow(overflow_min), .count2(mins2), .count1(mins1));
+    custom_counter cc_hour (.Clk(CLK100MHZ), .count_with_overflow(overflow_min), .count_without_overflow(HButton), .count_to2(4'd2), .count_to1(4'd3), .overflow(overflow_hour), .count2(hours2), .count1(hours1));
 	
 	
 	always @(posedge CLK100MHZ) begin
@@ -74,7 +74,5 @@ module WallClock(
 	   
 	   duty <= SW;
 	   LED[7:0] <= (secs2 * 8'b10) + secs1;
-	   LED[8] <= overflow_sec;
-	   LED[9] <= overflow_min;
 	end
 endmodule  
