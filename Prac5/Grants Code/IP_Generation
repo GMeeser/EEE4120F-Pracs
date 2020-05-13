@@ -1,0 +1,6 @@
+1. Generate a BRAM memory block from the IP Catalog
+2. Name the componenet quater_sin_wave_gen
+3. Under Port A options set the write width to 11 and the write depth to 64
+4. Set operating mode to No Change
+5. Under Other Options tick Load Init File, and select the quater sime wave LUT file
+6. Click OK and generate the module
