@@ -36,6 +36,12 @@ module top(
     //PWM Out - this gets tied to the BRAM
     reg [10:0] PWM;
     
+    // Quater-sine Implementation
+    reg [31:0] frequency = 261;
+    wire [10:0] quart;
+    
+    full_sin_wave full_sine_w_quart (CLK100MHZ, frequency, quart);
+    
     // Instantiate the PWM module
     pwm_module PWM1 (CLK100MHZ, PWM, AUD_PWM);
     // PWM should take in the clock, the data from memory
@@ -74,13 +80,13 @@ always @(posedge CLK100MHZ) begin
                 end
             end
             1: begin
-                if (clkdiv >= f_base*5/4) begin
+                if (clkdiv >= f_base*2*4/5) begin
                     clkdiv[12:0] <= 0;
                     addra <= addra + 1;
                 end
             end
             2: begin
-                if (clkdiv >= f_base*3/2) begin
+                if (clkdiv >= f_base*2*2/3) begin
                     clkdiv[12:0] <= 0;
                     addra <= addra + 1;
                 end
@@ -100,7 +106,7 @@ always @(posedge CLK100MHZ) begin
         endcase;
     end 
     else begin
-        if (clkdiv >= 1493) begin
+        if (clkdiv >= f_base*2) begin
             addra <= addra + 1'b1;
             clkdiv <= 0;
         end
