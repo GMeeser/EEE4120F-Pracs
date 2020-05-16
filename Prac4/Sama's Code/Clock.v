@@ -8,6 +8,7 @@ module WallClock(
 	input BTNC,
 	input BTNR,
 	input BTNL,
+	input BTNU,
 	input [7:0]SW,
 
 	//outputs - these will depend on your board's constraint files
@@ -15,7 +16,7 @@ module WallClock(
     output [7:0] SevenSegment,
     output reg [7:0] LED
 );
-    reg [31:0] tick_speed = 10000000; // change to 100000000 for accurate seconds
+    reg [31:0] tick_speed = 100000000; // change to 100000000 for accurate seconds
    
     wire pwmClk;
     reg [7:0] duty;
@@ -30,10 +31,12 @@ module WallClock(
 	//Add and debounce the buttons
 	wire MButton;
 	wire HButton;
+	wire switch_speed;
 	
 	// Instantiate Debounce modules here
 	Debounce DebounceM (CLK100MHZ, BTNR, MButton);
 	Debounce DebounceH (CLK100MHZ, BTNL, HButton);
+	Debounce DebounceS (CLK100MHZ, BTNU, switch_speed);
 	
 	// registers for storing the time
     wire [3:0]hours1;
@@ -42,6 +45,8 @@ module WallClock(
 	wire [3:0]mins2;
 	wire [3:0]secs1;
 	wire [3:0]secs2;
+	
+	reg [7:0] s;
     
 	//Initialize seven segment
 	// You will need to change some signals depending on you constraints
@@ -65,14 +70,23 @@ module WallClock(
     custom_counter cc_min (.Clk(CLK100MHZ), .count_with_overflow(overflow_sec), .count_without_overflow(MButton), .count_to2(4'd5), .count_to1(4'd9), .overflow(overflow_min), .count2(mins2), .count1(mins1));
     custom_counter cc_hour (.Clk(CLK100MHZ), .count_with_overflow(overflow_min), .count_without_overflow(HButton), .count_to2(4'd2), .count_to1(4'd3), .overflow(overflow_hour), .count2(hours2), .count1(hours1));
 	
+	always @(posedge switch_speed) begin
+	   if (tick_speed == 100000000) begin
+	       tick_speed <= 10000000;
+	   end else tick_speed <= 100000000;
+	end
 	
 	always @(posedge CLK100MHZ) begin
-	   if (count == tick_speed) begin
+	   if (count >= tick_speed/2) begin
 	       second_tick = !second_tick;
 	       count = 0;
 	   end else count = count + 1'b1;
 	   
-	   duty <= SW;
-	   LED[7:0] <= (secs2 * 8'b10) + secs1;
+	   s[3:0] = secs2;
+	   s[7:4] = 4'b0;
+	   s = s*10;
+	   s = s + secs1;
+	   LED[7:0] = s;
+	   duty = SW;
 	end
 endmodule  
